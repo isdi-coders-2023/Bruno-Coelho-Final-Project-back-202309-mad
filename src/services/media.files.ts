@@ -41,7 +41,7 @@ export class MediaFiles {
 
       return imgData;
     } catch (err) {
-      const error = (err as { error: Error }).error as Error;
+      const error = err as Error;
       throw new HttpError(406, 'Not Acceptable', error.message);
     }
   }
