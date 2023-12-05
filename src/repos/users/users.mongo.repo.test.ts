@@ -37,31 +37,31 @@ describe('GivenUsersMongoRepo', () => {
     test('Then it should execute login', async () => {
       const result = await repo.login({} as LoginUser);
       expect(UserModel.findOne).toHaveBeenCalled();
-      expect(result).toBe('Unauthorized');
+      expect(result).toBe('Test');
     });
 
     test('Then it should execute getAll', async () => {
       const result = await repo.getAll();
       expect(exec).toHaveBeenCalled();
-      expect(result).toBe('Unauthorized');
+      expect(result).toBe('Test');
     });
 
     test('Then it should execute getById', async () => {
       const result = await repo.getById('');
       expect(exec).toHaveBeenCalled();
-      expect(result).toBe('Unauthorized');
+      expect(result).toBe('Test');
     });
 
     test('Then it should execute search', async () => {
       const result = await repo.search('hair');
       expect(exec).toHaveBeenCalled();
-      expect(result).toBe('Unauthorized');
+      expect(result).toBe('Test');
     });
 
     test('Then it should execute update', async () => {
       const result = await repo.update('1', { id: '2' });
       expect(exec).toHaveBeenCalled();
-      expect(result).toBe('Unauthorized');
+      expect(result).toBe('Test');
     });
 
     test('Given delete method is unimplemented', async () => {
