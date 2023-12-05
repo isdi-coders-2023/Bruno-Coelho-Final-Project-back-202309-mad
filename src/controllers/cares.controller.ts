@@ -3,7 +3,7 @@ import createDebug from 'debug';
 import { Repository } from '../repos/repo.js';
 import { Care } from '../entities/care.js';
 import { Controller } from './controller.js';
-import { HttpError } from '../types/http.error.js';
+// Import { HttpError } from '../types/http.error.js';
 
 const debug = createDebug('W7E:services:controller');
 

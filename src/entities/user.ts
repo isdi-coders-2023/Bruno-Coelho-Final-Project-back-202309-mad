@@ -9,7 +9,7 @@ export type User = LoginUser & {
   id: string;
   name: string;
   surname: string;
-  admin: boolean;
+  admin: boolean; // IsAdmin cambiar por normativa.
   age: number;
   cares: Care[];
 };
