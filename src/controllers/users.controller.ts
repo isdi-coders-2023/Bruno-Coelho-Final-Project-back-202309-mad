@@ -6,7 +6,7 @@ import { Controller } from './controller.js';
 import { User } from '../entities/user.js';
 import { LoginResponse } from '../types/login.response.js';
 
-const debug = createDebug('W7E:users:controller');
+const debug = createDebug('Users:controller');
 
 export class UsersController extends Controller<User> {
   constructor(protected repo: UsersMongoRepo) {
@@ -35,3 +35,7 @@ export class UsersController extends Controller<User> {
     }
   }
 }
+const dateForm: string = '2034/5/23:22:12:55';
+const date = new Date(dateForm);
+
+date.getDate();
