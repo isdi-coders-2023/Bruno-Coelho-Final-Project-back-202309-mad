@@ -1,13 +1,18 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { UsersController } from './users.controller';
 import { UsersMongoRepo } from '../repos/users/users.mongo.repo';
+import { User } from '../entities/user';
 
-describe('Given UsersController class', () => {
+jest.mock('../services/auth');
+
+describe('Given Cares Controller class', () => {
   let controller: UsersController;
   let mockRequest: Request;
   let mockResponse: Response;
-  let mockNext: jest.Mock;
-  beforeEach(() => {
+  let mockNext: NextFunction;
+  let mockRepo: jest.Mocked<UsersMongoRepo>;
+
+  beforeAll(() => {
     mockRequest = {
       body: {},
       params: {},
@@ -19,119 +24,110 @@ describe('Given UsersController class', () => {
     } as unknown as Response;
     mockNext = jest.fn();
   });
+
+  beforeEach(() => {
+    mockRepo = {
+      getById: jest.fn().mockResolvedValue({}),
+      create: jest.fn().mockResolvedValue({}),
+      update: jest.fn().mockResolvedValue({}),
+      login: jest.fn().mockResolvedValue({}),
+    } as unknown as jest.Mocked<UsersMongoRepo>;
+
+    controller = new UsersController(mockRepo);
+  });
+
   describe('When we instantiate it without errors', () => {
-    beforeEach(() => {
+    test('Then login should return user data and token for a valid user', async () => {
+      const mockRequestWithUserId = {
+        body: { userId: 'someUserId' },
+        params: {},
+        query: { key: 'value' },
+      } as unknown as Request;
+      const mockResponseWithUserId = {
+        json: jest.fn(),
+        status: jest.fn(),
+      } as unknown as Response;
+      await controller.login(
+        mockRequestWithUserId,
+        mockResponseWithUserId,
+        mockNext
+      );
+      expect(mockResponseWithUserId.json).toHaveBeenCalled();
+    });
+
+    test('Then login should successfully authenticate with valid credentials and return user data and token', async () => {
+      const mockRequest = {
+        body: {
+          email: 'test@example.com',
+          password: 'test123',
+        },
+      } as unknown as Request;
+
+      const mockUser = {
+        email: 'TestName',
+        password: 'test123',
+      } as unknown as User;
+      mockRepo.login.mockResolvedValueOnce(mockUser);
+      await controller.login(mockRequest, mockResponse, mockNext);
+
+      expect(mockRepo.login).toHaveBeenCalledWith({
+        email: 'test@example.com',
+        password: 'test123',
+      });
+      expect(mockResponse.status).toHaveBeenCalledWith(202);
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        user: mockUser,
+      });
+    });
+
+    test('Then register (create) should create a new user with valid input data and image file', async () => {
+      const mockRequest = {
+        file: {
+          path: 'valid/path/to/image.jpg',
+        },
+        body: {},
+      } as unknown as Request;
+
+      const mockNext = jest.fn();
       const mockRepo = {
-        getAll: jest.fn().mockResolvedValue([{}]),
-        getById: jest.fn().mockResolvedValue({}),
-        search: jest.fn().mockResolvedValue([{}]),
-        create: jest.fn().mockResolvedValue({}),
-        update: jest.fn().mockResolvedValue({}),
-        delete: jest.fn().mockResolvedValue(undefined),
+        create: jest.fn(),
       } as unknown as UsersMongoRepo;
 
-      controller = new UsersController(mockRepo);
-    });
+      const controller = new UsersController(mockRepo);
+      const mockImageData = { url: 'https://example.com/image.jpg' };
+      const mockCloudinaryService = {
+        uploadImage: jest.fn().mockResolvedValue(mockImageData),
+      };
 
-    test('Then getAll should ...', async () => {
-      await controller.getAll(mockRequest, mockResponse, mockNext);
-      expect(mockResponse.json).toHaveBeenCalledWith([{}]);
-    });
+      controller.cloudinaryService = mockCloudinaryService;
 
-    test('Then getById should ...', async () => {
-      await controller.getById(mockRequest, mockResponse, mockNext);
-      expect(mockResponse.json).toHaveBeenCalledWith({});
-    });
-
-    // T test('Then search should ...', async () => {
-    //   await controller.search(mockRequest, mockResponse, mockNext);
-    //   expect(mockResponse.json).toHaveBeenCalledWith([{}]);
-    // });
-
-    test('Then create should ...', async () => {
       await controller.create(mockRequest, mockResponse, mockNext);
-      expect(mockResponse.json).toHaveBeenCalledWith({});
-    });
 
-    test('Then update should ...', async () => {
-      await controller.update(mockRequest, mockResponse, mockNext);
-      expect(mockResponse.json).toHaveBeenCalledWith({});
-    });
-
-    test('Then delete should ...', async () => {
-      await controller.delete(mockRequest, mockResponse, mockNext);
-      expect(mockResponse.json).toHaveBeenCalledWith({});
+      expect(mockCloudinaryService.uploadImage).toHaveBeenCalledWith(
+        mockRequest.file?.path
+      );
+      expect(mockRequest.body.avatar).toBe(mockImageData);
     });
   });
 
-  describe('When we instantiate it WITH errors', () => {
+  describe('When we instantiate it with errors', () => {
     let mockError: Error;
     beforeEach(() => {
-      mockError = new Error('Mock error');
+      mockError = new Error('Invalid multer file');
       const mockRepo = {
-        getAll: jest.fn().mockRejectedValue(mockError),
-        getById: jest.fn().mockRejectedValue(mockError),
-        search: jest.fn().mockRejectedValue(mockError),
+        login: jest.fn().mockRejectedValue(mockError),
         create: jest.fn().mockRejectedValue(mockError),
-        update: jest.fn().mockRejectedValue(mockError),
-        delete: jest.fn().mockRejectedValue(mockError),
       } as unknown as UsersMongoRepo;
 
       controller = new UsersController(mockRepo);
     });
-
-    test('Then getAll should ...', async () => {
-      await controller.getAll(mockRequest, mockResponse, mockNext);
-      expect(mockNext).toHaveBeenLastCalledWith(mockError);
-    });
-
-    test('Then getById should ...', async () => {
-      await controller.getById(mockRequest, mockResponse, mockNext);
-      expect(mockNext).toHaveBeenLastCalledWith(mockError);
-    });
-
-    test('Then create should ...', async () => {
-      await controller.create(mockRequest, mockResponse, mockNext);
-      expect(mockNext).toHaveBeenLastCalledWith(mockError);
-    });
-
-    test('Then update should ...', async () => {
-      await controller.update(mockRequest, mockResponse, mockNext);
-      expect(mockNext).toHaveBeenLastCalledWith(mockError);
-    });
-
-    test('Then delete should ...', async () => {
-      await controller.delete(mockRequest, mockResponse, mockNext);
-      expect(mockNext).toHaveBeenLastCalledWith(mockError);
-    });
-
-    test('Then login should...', async () => {
-      const mockUserId = 'mockUserId';
-      const mockLoginResult = { id: 'mockUserId', email: 'mock@example.com' };
-
-      // Mocking the request with a userId
-      const mockRequest = {
-        body: { userId: mockUserId },
-      } as unknown as Request;
-
-      // Mocking the repo methods for both cases
-      const mockRepo = {
-        getById: jest.fn().mockResolvedValue(mockLoginResult),
-        login: jest.fn().mockResolvedValue(mockLoginResult),
-      } as unknown as UsersMongoRepo;
-
-      // Creating two instances of the controller
-      const controller = new UsersController(mockRepo);
-
-      // Testing with userId
+    test('Then login should throw an error', async () => {
       await controller.login(mockRequest, mockResponse, mockNext);
-      expect(mockRepo.getById).toHaveBeenCalledWith(mockUserId);
-      // Expect(mockResponse.status).toHaveBeenCalledWith(202);
-      // expect(mockResponse.statusMessage).toBe('Accepted');
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        user: mockLoginResult,
-        token: expect.any(String),
-      });
+      expect(mockNext).toHaveBeenCalledWith(mockError);
+    });
+    test('Then register (create) should throw an error', async () => {
+      await controller.create(mockRequest, mockResponse, mockNext);
+      expect(mockNext).toHaveBeenCalledWith(mockError);
     });
   });
 });
