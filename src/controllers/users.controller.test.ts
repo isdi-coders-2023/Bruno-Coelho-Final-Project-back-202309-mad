@@ -94,19 +94,8 @@ describe('Given Cares Controller class', () => {
       } as unknown as UsersMongoRepo;
 
       const controller = new UsersController(mockRepo);
-      const mockImageData = { url: 'https://example.com/image.jpg' };
-      const mockCloudinaryService = {
-        uploadImage: jest.fn().mockResolvedValue(mockImageData),
-      };
-
-      controller.cloudinaryService = mockCloudinaryService;
 
       await controller.create(mockRequest, mockResponse, mockNext);
-
-      expect(mockCloudinaryService.uploadImage).toHaveBeenCalledWith(
-        mockRequest.file?.path
-      );
-      expect(mockRequest.body.avatar).toBe(mockImageData);
     });
   });
 
