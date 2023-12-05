@@ -8,7 +8,7 @@ jest.mock('../../services/auth.js');
 
 describe('GivenUsersMongoRepo', () => {
   Auth.hash = jest.fn();
-  Auth.comparison = jest.fn().mockResolvedValue(true);
+  Auth.compare = jest.fn().mockResolvedValue(true);
   let repo: UsersMongoRepo;
   describe('When we instantiate it without errors', () => {
     const exec = jest.fn().mockResolvedValue('Test');
@@ -23,7 +23,6 @@ describe('GivenUsersMongoRepo', () => {
       UserModel.findById = mockQueryMethod;
       UserModel.findOne = mockQueryMethod;
       UserModel.findByIdAndUpdate = mockQueryMethod;
-      UserModel.findByIdAndDelete = mockQueryMethod;
       UserModel.create = jest.fn().mockResolvedValue('Test');
       repo = new UsersMongoRepo();
     });
@@ -36,9 +35,9 @@ describe('GivenUsersMongoRepo', () => {
     });
 
     test('Then it should execute login', async () => {
-      const result = await repo.login({ email: '' } as LoginUser);
+      const result = await repo.login({} as LoginUser);
       expect(UserModel.findOne).toHaveBeenCalled();
-      expect(result).toBe('Test');
+      expect(result).toBe('Unauthorized');
     });
 
     test('Then it should execute getAll', async () => {
@@ -54,7 +53,7 @@ describe('GivenUsersMongoRepo', () => {
     });
 
     test('Then it should execute search', async () => {
-      const result = await repo.search({ key: 'age', value: 18 });
+      const result = await repo.search('hair');
       expect(exec).toHaveBeenCalled();
       expect(result).toBe('Test');
     });
@@ -65,25 +64,40 @@ describe('GivenUsersMongoRepo', () => {
       expect(result).toBe('Test');
     });
 
-    test('Then it should execute delete', async () => {
-      await repo.delete('1');
-      expect(exec).toHaveBeenCalled();
+    test('Given delete method is unimplemented', async () => {
+      const deleteMethod = () => repo.delete('');
+      expect(deleteMethod).toThrow('Method not implemented.');
     });
   });
-
-  // Temp describe('When we instantiate it WITH errors', () => {
-  //   const exec = jest.fn().mockRejectedValue(new Error('Test'));
-  //   beforeEach(() => {
-  //     UserModel.findById = jest.fn().mockReturnValue({
-  //       populate: jest.fn().mockReturnValue({
-  //         exec,
-  //       }),
-  //     });
-  //     repo = new UsersMongoRepo();
-  //   });
-
-  //   test('Then it should execute getById', async () => {
-  //     expect(repo.getById('')).rejects.toThrow();
-  //   });
-  // });
+  describe('When we isntantiate it WITH errors', () => {
+    const exec = jest.fn().mockResolvedValue(undefined);
+    beforeEach(() => {
+      UserModel.findById = jest.fn().mockReturnValue({
+        populate: jest.fn().mockReturnValue({
+          exec,
+        }),
+      });
+      UserModel.findOne = jest.fn().mockReturnValue({
+        exec,
+      });
+      repo = new UsersMongoRepo();
+    });
+    test('Then getById should throw an error', async () => {
+      // Cómo testear un error asíncrono
+      expect(repo.getById('')).rejects.toThrow();
+    });
+    test('Then should execute login() throwing an error', async () => {
+      expect(repo.login({} as User)).rejects.toThrow();
+    });
+  });
 });
+
+// Test('Given update method is unimplemented', async () => {
+//   const updateMethod = () => repo.update('', {});
+//   expect(updateMethod).toThrow('Method not implemented.');
+// });
+
+// test('Given search method is unimplemented', async () => {
+//   const searchMethod = () => repo.search({ key: 'id', value: '' });
+//   expect(searchMethod).toThrow('Method not implemented.');
+// });

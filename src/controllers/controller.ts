@@ -1,9 +1,10 @@
 import { Repository } from '../repos/repo.js';
 import { NextFunction, Request, Response } from 'express';
-import { MediaFiles } from '../services/media.file.js';
+import { MediaFiles } from '../services/media.files.js';
 
 export abstract class Controller<T extends { id: unknown }> {
   cloudinaryService: MediaFiles;
+
   // eslint-disable-next-line no-unused-vars
   constructor(protected repo: Repository<T>) {
     this.cloudinaryService = new MediaFiles();
@@ -18,14 +19,14 @@ export abstract class Controller<T extends { id: unknown }> {
     }
   }
 
-  // Async getById(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     const result = await this.repo.getById(req.params.id);
-  //     res.json(result);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+  async getById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await this.repo.getById(req.params.id);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 
   async search(req: Request, res: Response, next: NextFunction) {
     try {

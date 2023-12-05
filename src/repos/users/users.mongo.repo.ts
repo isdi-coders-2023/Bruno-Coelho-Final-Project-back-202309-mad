@@ -44,9 +44,9 @@ export class UsersMongoRepo implements Repository<User> {
     return result;
   }
 
-  delete(_id: string): Promise<void> {
+  delete(_userID: string): Promise<void> {
     throw new Error('Method not implemented.');
-  }
+  } // Aunque no se use, es necesario para que no de error, Porque tengo un repo generico para Users y Cares
 
   search(_typeToSearch: string): Promise<User[]> {
     const result = UserModel.find({ type: _typeToSearch }).exec();

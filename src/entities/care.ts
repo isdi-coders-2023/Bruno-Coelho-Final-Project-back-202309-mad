@@ -1,4 +1,3 @@
-import { ImgData } from '../types/img.data.js';
 import { User } from './user';
 
 export type Care = {
@@ -6,8 +5,8 @@ export type Care = {
   name: string;
   type: string; // Se puede cambiar por typos futuros en razon del servicio
   description: string;
-  careFrontImg: ImgData;
-  careBackImg: ImgData;
+  // CareFrontImg: ImgData;
+  // careBackImg: ImgData;
   price: number;
   adminUser: User;
   adminUserID: string;
