@@ -11,7 +11,7 @@ describe('GivenUsersMongoRepo', () => {
   Auth.compare = jest.fn().mockResolvedValue(true);
   let repo: UsersMongoRepo;
   describe('When we instantiate it without errors', () => {
-    const exec = jest.fn().mockResolvedValue('Test');
+    const exec = jest.fn().mockResolvedValue('Unauthorized');
     beforeEach(() => {
       const mockQueryMethod = jest.fn().mockReturnValue({
         populate: jest.fn().mockReturnValue({
