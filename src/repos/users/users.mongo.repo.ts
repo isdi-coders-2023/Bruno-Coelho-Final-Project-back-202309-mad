@@ -48,8 +48,8 @@ export class UsersMongoRepo implements Repository<User> {
     throw new Error('Method not implemented.');
   } // Aunque no se use, es necesario para que no de error, Porque tengo un repo generico para Users y Cares
 
-  search(_typeToSearch: string): Promise<User[]> {
-    const result = UserModel.find({ type: _typeToSearch }).exec();
+  async search(_typeToSearch: string): Promise<User[]> {
+    const result = await UserModel.find({ type: _typeToSearch }).exec();
     if (!result) throw new HttpError(404, 'Not Found', 'Search not possible');
     return result;
   } // Aunque no se use, es necesario para que no de error, Porque tengo un repo generico.

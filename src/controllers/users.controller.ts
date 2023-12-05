@@ -35,7 +35,3 @@ export class UsersController extends Controller<User> {
     }
   }
 }
-const dateForm: string = '2034/5/23:22:12:55';
-const date = new Date(dateForm);
-
-date.getDate();
