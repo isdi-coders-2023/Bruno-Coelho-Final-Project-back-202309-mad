@@ -11,7 +11,7 @@ describe('GivenUsersMongoRepo', () => {
   Auth.compare = jest.fn().mockResolvedValue(true);
   let repo: UsersMongoRepo;
   describe('When we instantiate it without errors', () => {
-    const exec = jest.fn().mockResolvedValue('Unauthorized');
+    const exec = jest.fn().mockResolvedValue('Test');
     beforeEach(() => {
       const mockQueryMethod = jest.fn().mockReturnValue({
         populate: jest.fn().mockReturnValue({
@@ -43,25 +43,25 @@ describe('GivenUsersMongoRepo', () => {
     test('Then it should execute getAll', async () => {
       const result = await repo.getAll();
       expect(exec).toHaveBeenCalled();
-      expect(result).toBe('Test');
+      expect(result).toBe('Unauthorized');
     });
 
     test('Then it should execute getById', async () => {
       const result = await repo.getById('');
       expect(exec).toHaveBeenCalled();
-      expect(result).toBe('Test');
+      expect(result).toBe('Unauthorized');
     });
 
     test('Then it should execute search', async () => {
       const result = await repo.search('hair');
       expect(exec).toHaveBeenCalled();
-      expect(result).toBe('Test');
+      expect(result).toBe('Unauthorized');
     });
 
     test('Then it should execute update', async () => {
       const result = await repo.update('1', { id: '2' });
       expect(exec).toHaveBeenCalled();
-      expect(result).toBe('Test');
+      expect(result).toBe('Unauthorized');
     });
 
     test('Given delete method is unimplemented', async () => {
