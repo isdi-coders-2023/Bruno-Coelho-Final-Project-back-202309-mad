@@ -1,4 +1,3 @@
-Import { ImgData } from '../types/img.data';
 import { Care } from './care.js';
 
 export type LoginUser = {
@@ -10,9 +9,7 @@ export type User = LoginUser & {
   id: string;
   name: string;
   surname: string;
+  admin: boolean;
   age: number;
-  beautyCare: Care[];
-  avatar: ImgData;
-  role: 'Admin' | 'User';
+  cares: Care[];
 };
-

@@ -3,44 +3,51 @@ import { CaresController } from '../controllers/cares.controller.js';
 import createDebug from 'debug';
 import { CaresMongoRepo } from '../repos/cares/cares.mongo.repo.js';
 import { AuthInterceptor } from '../middleware/auth.interceptor.js';
-import { FileInterceptor } from '../middleware/file.interceptor.js';
+// A import { FileInterceptor } from '../middleware/file.interceptor.js';
 
-const debug = createDebug('EPV:clothes:router');
+const debug = createDebug('W7E:cares:router');
 
-export const clothesRouter = createRouter();
+export const caresRouter = createRouter();
 debug('Starting');
 
 const repo = new CaresMongoRepo();
-const controller = new CaresMongoRepo(repo);
+const controller = new CaresController(repo);
 const interceptor = new AuthInterceptor();
-const fileInterceptor = new FileInterceptor();
+// A const fileInterceptor = new FileInterceptor();
 
-clothesRouter.get(
-  '/',
-  // Opcional interceptor.authorization.bind(interceptor),
+// GET all cares
+caresRouter.get(
+  '/all',
+  interceptor.authorization.bind(interceptor),
   controller.getAll.bind(controller)
 );
-clothesRouter.get('/search', controller.search.bind(controller));
-clothesRouter.get('/:id', controller.getById.bind(controller));
-// Revisar para cambiar por fields y que lo pueda hacer el admin
-clothesRouter.post(
-  '/',
+
+// GET care by type
+caresRouter.get('/search/type/:type', controller.search.bind(controller));
+
+// GET care by ID
+// caresRouter.get('/search/id/:id', controller.getById.bind(controller));
+
+// POST create care
+caresRouter.post(
+  '/create',
   interceptor.authorization.bind(interceptor),
-  fileInterceptor.singleFileStore('clothingItemFrontImg').bind(fileInterceptor),
+  // A fileInterceptor.singleFileStore('careFrontImg').bind(fileInterceptor),
   controller.create.bind(controller)
 );
-// Revisar para que lo pueda hacer el admin
-clothesRouter.patch(
-  '/:id',
+
+// PATCH update care
+caresRouter.patch(
+  '/update/:id',
   interceptor.authorization.bind(interceptor),
-  interceptor.authenticationClothes.bind(interceptor),
+  // A interceptor.authentication.bind(interceptor),
   controller.update.bind(controller)
 );
-clothesRouter.delete(
-  '/:id',
+
+// DELETE delete care
+caresRouter.delete(
+  '/delete/:id',
   interceptor.authorization.bind(interceptor),
-  // Los usuarios borran lo suyo -> interceptor.authenticationClothes.bind(interceptor),
-  // Los admin pueden borrar
-  interceptor.isAdmin.bind(interceptor),
+  // A interceptor.authentication.bind(interceptor),
   controller.delete.bind(controller)
 );

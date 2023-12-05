@@ -6,7 +6,7 @@ import createDebug from 'debug';
 import { UsersMongoRepo } from '../users/users.mongo.repo.js';
 import mongoose from 'mongoose';
 
-const debug = createDebug('Cares:mongo:repo');
+const debug = createDebug('W7E:Cares:mongo:repo');
 
 export class CaresMongoRepo implements Repository<Care> {
   usersRepo: UsersMongoRepo;
@@ -15,49 +15,31 @@ export class CaresMongoRepo implements Repository<Care> {
     debug('Instantiated');
   }
 
-  async search({
-    key,
-    value,
-  }: {
-    key: keyof Care;
-    value: unknown;
-  }): Promise<Care[]> {
-    const result = await CareModel.find({ [key]: value })
-      .populate('creator', {
-        beautyCare: 0, // BeautyCare serán mis servicios
-      })
-      .exec();
+  async search(typeToSearch: string): Promise<Care[]> {
+    const result = await CareModel.find({ type: typeToSearch }).exec();
     return result;
   }
 
   async getAll(): Promise<Care[]> {
-    const result = await CareModel.find()
-      .populate('creator', {
-        beautyCare: 0,
-      })
-      .exec();
+    const result = await CareModel.find().exec();
     return result;
   }
 
-  async getById(id: string): Promise<Care> {
-    const result = await CareModel.findById(id)
-      .populate('creator', {
-        beautyCare: 0,
-      })
-      .exec();
-    if (!result) throw new HttpError(404, 'Not Found', 'GetById not possible');
-    return result;
-  }
+  // Async getById(id: string): Promise<Care> {
+  //   const result = await CareModel.findById(id)
+  //     .populate('client', {
+  //       cares: 0,
+  //     })
+  //     .exec();
+  //   if (!result) throw new HttpError(404, 'Not Found', 'GetById not possible');
+  //   return result;
+  // }
 
   async create(newItem: Omit<Care, 'id'>): Promise<Care> {
-    console.log(newItem);
-    const userID = newItem.creator.id;
+    const userID = newItem.adminUserID;
     const user = await this.usersRepo.getById(userID);
-    const result: Care = await CareModel.create({
-      ...newItem,
-      creator: userID,
-    });
-    user.beautyCare.push(result);
+    const result: Care = await CareModel.create({ ...newItem, client: userID });
+    user.cares.push(result);
     await this.usersRepo.update(userID, user);
     return result;
   }
@@ -65,28 +47,20 @@ export class CaresMongoRepo implements Repository<Care> {
   async update(id: string, updatedItem: Partial<Care>): Promise<Care> {
     const result = await CareModel.findByIdAndUpdate(id, updatedItem, {
       new: true,
-    })
-      .populate('creator', {
-        beautyCare: 0,
-      })
-      .exec();
+    }).exec();
+
     if (!result) throw new HttpError(404, 'Not Found', 'Update not possible');
     return result;
   }
 
-  async delete(id: string): Promise<void> {
-    const result = await CareModel.findByIdAndDelete(id)
-      .populate('creator', {
-        beautyCare: 0,
-      })
-      .exec();
+  async delete(userID: string, id: string): Promise<void> {
+    const result = await CareModel.findByIdAndDelete(id);
     if (!result) {
       throw new HttpError(404, 'Not Found', 'Delete not possible');
     }
 
-    const userID = result.creator.id;
     const user = await this.usersRepo.getById(userID);
-    user.beautyCare = user.beautyCare.filter((item) => {
+    user.cares = user.cares.filter((item) => {
       const itemID = item as unknown as mongoose.mongo.ObjectId;
       return itemID.toString() !== id;
     });

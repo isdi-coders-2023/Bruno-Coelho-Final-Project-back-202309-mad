@@ -19,17 +19,15 @@ const usersSchema = new Schema<User>({
     type: String,
     required: true,
   },
-  role: {
-    type: String,
-    required: true,
-    enum: ['Admin', 'User'],
-    default: 'User',
+  admin: {
+    type: Boolean,
+    default: false,
   },
   age: Number,
-  beautyCare: [
+  cares: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'beautyCare',
+      ref: 'Care',
     },
   ],
 });

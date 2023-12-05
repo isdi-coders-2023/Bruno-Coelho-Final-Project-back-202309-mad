@@ -18,21 +18,18 @@ export abstract class Controller<T extends { id: unknown }> {
     }
   }
 
-  async getById(req: Request, res: Response, next: NextFunction) {
-    try {
-      const result = await this.repo.getById(req.params.id);
-      res.json(result);
-    } catch (error) {
-      next(error);
-    }
-  }
+  // Async getById(req: Request, res: Response, next: NextFunction) {
+  //   try {
+  //     const result = await this.repo.getById(req.params.id);
+  //     res.json(result);
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
 
   async search(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.repo.search({
-        key: Object.entries(req.query)[0][0] as keyof T,
-        value: Object.entries(req.query)[0][1],
-      });
+      const result = await this.repo.search(req.params.type);
       res.json(result);
     } catch (error) {
       next(error);
@@ -61,7 +58,7 @@ export abstract class Controller<T extends { id: unknown }> {
 
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
-      await this.repo.delete(req.params.id);
+      await this.repo.delete(req.body.adminUserID, req.params.id);
       res.status(204);
       res.statusMessage = 'No Content';
       res.json({});

@@ -9,5 +9,6 @@ export type Care = {
   careFrontImg: ImgData;
   careBackImg: ImgData;
   price: number;
-  creator: User;
+  adminUser: User;
+  adminUserID: string;
 };

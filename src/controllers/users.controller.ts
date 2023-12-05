@@ -5,9 +5,8 @@ import { Auth } from '../services/auth.js';
 import { Controller } from './controller.js';
 import { User } from '../entities/user.js';
 import { LoginResponse } from '../types/login.response.js';
-import { HttpError } from '../types/http.error.js';
 
-const debug = createDebug('Users:controller');
+const debug = createDebug('W7E:users:controller');
 
 export class UsersController extends Controller<User> {
   constructor(protected repo: UsersMongoRepo) {
@@ -17,8 +16,8 @@ export class UsersController extends Controller<User> {
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = req.body.userId
-        ? await this.repo.getById(req.body.userId)
+      const result = req.body.userId // Explicación: userId equivaldría a tokenUserId (para poder entender mejor de dónde viene)
+        ? await this.repo.getById(req.body.userId) // Explicación: userId equivaldría a tokenUserId (para poder entender mejor de dónde viene)
         : await this.repo.login(req.body);
 
       const data: LoginResponse = {
@@ -26,24 +25,11 @@ export class UsersController extends Controller<User> {
         token: Auth.signJWT({
           id: result.id,
           email: result.email,
-          role: result.role,
         }),
       };
       res.status(202);
       res.statusMessage = 'Accepted';
       res.json(data);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async create(req: Request, res: Response, next: NextFunction) {
-    try {
-      if (!req.file)
-        throw new HttpError(406, 'Not Acceptable', 'Invalid multer file');
-      const imgData = await this.cloudinaryService.uploadImage(req.file.path);
-      req.body.avatar = imgData;
-      super.create(req, res, next);
     } catch (error) {
       next(error);
     }

@@ -8,6 +8,7 @@ const caresSchema = new Schema<Care>({
   },
   type: {
     type: String,
+    enum: ['hair', 'eyebrows', 'eyelashes', 'nails'],
     required: true,
   },
   description: {
@@ -17,25 +18,17 @@ const caresSchema = new Schema<Care>({
   careFrontImg: {
     publicId: String,
     size: Number,
-    height: Number,
-    width: Number,
     format: String,
     url: String,
   },
   careBackImg: {
     publicId: String,
     size: Number,
-    height: Number,
-    width: Number,
     format: String,
     url: String,
   },
   price: {
     type: Number,
-  },
-  creator: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
   },
 });
 
