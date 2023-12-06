@@ -73,9 +73,7 @@ describe('GivenUsersMongoRepo', () => {
     const exec = jest.fn().mockResolvedValue(undefined);
     beforeEach(() => {
       UserModel.findById = jest.fn().mockReturnValue({
-        populate: jest.fn().mockReturnValue({
-          exec,
-        }),
+        exec,
       });
       UserModel.findOne = jest.fn().mockReturnValue({
         exec,
