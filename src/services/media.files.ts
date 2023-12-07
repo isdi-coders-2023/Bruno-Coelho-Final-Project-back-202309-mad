@@ -4,7 +4,7 @@ import createDebug from 'debug';
 import { ImgData } from '../types/img.data.js';
 import { HttpError } from '../types/http.error.js';
 
-const debug = createDebug('W7E:mediaFiles');
+const debug = createDebug('BC:mediaFiles');
 
 export class MediaFiles {
   constructor() {

@@ -7,7 +7,7 @@ import createDebug from 'debug';
 import { errorMiddleware } from './middleware/error.middleware.js';
 import { usersRouter } from './routers/users.routes.js';
 
-const debug = createDebug('W7E:app');
+const debug = createDebug('BC:app');
 
 export const app = express();
 debug('Starting');

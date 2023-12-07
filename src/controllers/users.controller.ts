@@ -6,7 +6,7 @@ import { Controller } from './controller.js';
 import { User } from '../entities/user.js';
 import { LoginResponse } from '../types/login.response.js';
 
-const debug = createDebug('W7E:users:controller');
+const debug = createDebug('BC:users:controller');
 
 export class UsersController extends Controller<User> {
   constructor(protected repo: UsersMongoRepo) {

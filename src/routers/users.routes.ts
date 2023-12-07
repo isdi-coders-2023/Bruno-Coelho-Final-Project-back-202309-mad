@@ -4,7 +4,7 @@ import createDebug from 'debug';
 import { UsersMongoRepo } from '../repos/users/users.mongo.repo.js';
 import { AuthInterceptor } from '../middleware/auth.interceptor.js';
 
-const debug = createDebug('W7E:users:router');
+const debug = createDebug('BC:users:router');
 
 export const usersRouter = createRouter();
 debug('Starting');

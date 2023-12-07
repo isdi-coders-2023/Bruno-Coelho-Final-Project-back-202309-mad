@@ -5,7 +5,7 @@ import { CaresMongoRepo } from '../repos/cares/cares.mongo.repo.js';
 import { AuthInterceptor } from '../middleware/auth.interceptor.js';
 // A import { FileInterceptor } from '../middleware/file.interceptor.js';
 
-const debug = createDebug('W7E:cares:router');
+const debug = createDebug('BC:cares:router');
 
 export const caresRouter = createRouter();
 debug('Starting');

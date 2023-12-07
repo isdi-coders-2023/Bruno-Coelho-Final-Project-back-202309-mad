@@ -6,7 +6,7 @@ import createDebug from 'debug';
 import { UsersMongoRepo } from '../users/users.mongo.repo.js';
 import mongoose from 'mongoose';
 
-const debug = createDebug('W7E:Cares:mongo:repo');
+const debug = createDebug('BC:Cares:mongo:repo');
 
 export class CaresMongoRepo implements Repository<Care> {
   usersRepo: UsersMongoRepo;
