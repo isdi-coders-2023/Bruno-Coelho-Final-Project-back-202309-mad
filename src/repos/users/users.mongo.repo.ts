@@ -5,7 +5,7 @@ import { UserModel } from './users.mongo.model.js';
 import { HttpError } from '../../types/http.error.js';
 import { Auth } from '../../services/auth.js';
 
-const debug = createDebug('Users:mongo:repo');
+const debug = createDebug('W7E:users:mongo:repo');
 
 export class UsersMongoRepo implements Repository<User> {
   constructor() {
@@ -44,13 +44,17 @@ export class UsersMongoRepo implements Repository<User> {
     return result;
   }
 
-  delete(_userID: string): Promise<void> {
+  delete(_id: string): Promise<void> {
     throw new Error('Method not implemented.');
-  } // Aunque no se use, es necesario para que no de error, Porque tengo un repo generico para Users y Cares
+  }
 
-  async search(_typeToSearch: string): Promise<User[]> {
-    const result = await UserModel.find({ type: _typeToSearch }).exec();
+  search(_typeToSearch: string): Promise<User[]> {
+    const result = UserModel.find({ type: _typeToSearch }).exec();
     if (!result) throw new HttpError(404, 'Not Found', 'Search not possible');
     return result;
   } // Aunque no se use, es necesario para que no de error, Porque tengo un repo generico.
+
+  getByPage(_typeToSearch: string): Promise<User[]> {
+    throw new Error('Method not implemented.');
+  }
 }

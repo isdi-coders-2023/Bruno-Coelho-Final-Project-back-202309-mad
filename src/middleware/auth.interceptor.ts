@@ -11,6 +11,7 @@ export class AuthInterceptor {
     debug('Instantiated');
   }
 
+  // Verifica que el usuario esté logueado
   authorization(req: Request, res: Response, next: NextFunction) {
     try {
       const tokenHeader = req.get('Authorization');
@@ -25,15 +26,13 @@ export class AuthInterceptor {
     }
   }
 
-  async authentication(req: Request, res: Response, next: NextFunction) {
+  // Verifica que el usuario que quiere editar algo sea el dueño de ese algo
+  async adminAuthentication(req: Request, res: Response, next: NextFunction) {
     try {
-      // Eres el usuario
-      const userID = req.body.id;
-      // Queres actuar sobre la care req.params.id
-      const userToAddID = req.params.id;
+      const userID = req.body.adminUserID;
       const repoUsers = new UsersMongoRepo();
-      const user = await repoUsers.getById(userToAddID);
-      if (user.id !== userID)
+      const user = await repoUsers.getById(userID);
+      if (!user.admin)
         throw new HttpError(401, 'Unauthorized', 'User not valid');
       next();
     } catch (error) {
