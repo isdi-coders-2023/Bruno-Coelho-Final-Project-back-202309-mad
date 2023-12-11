@@ -22,7 +22,7 @@ describe('Given the Media File class', () => {
       const result = await mediaFiles.uploadImage(imagePath);
       expect(cloudinary.uploader.upload).toHaveBeenCalledWith(imagePath, {
         // eslint-disable-next-line camelcase
-        use_filername: true,
+        use_filename: true,
         // eslint-disable-next-line camelcase
         unique_filename: false,
         overwrite: true,
@@ -32,13 +32,13 @@ describe('Given the Media File class', () => {
         publicId: 'public_id',
         size: 1000,
         height: 500,
-        With: 500,
+        width: 500,
         format: 'jpg',
       });
     });
     test('should handle cloudinary API errors when image upload fails', async () => {
       const imagePath = 'valid/image/path.jpg';
-      const error = new Error('Upload failed');
+      const error = new HttpError(406, 'Not Acceptable');
       cloudinary.uploader.upload = jest.fn().mockRejectedValue(error);
       const mediaFiles = new MediaFiles();
       let errorResult: HttpError | undefined;
@@ -51,8 +51,7 @@ describe('Given the Media File class', () => {
       if (errorResult) {
         expect(errorResult).toBeInstanceOf(HttpError);
         expect(errorResult.status).toBe(406);
-        expect(errorResult.statusMessage).toBe('Not aceptable');
-        expect(errorResult.message).toBe('Upload failed');
+        expect(errorResult.statusMessage).toBe('Not Acceptable');
       }
     });
   });

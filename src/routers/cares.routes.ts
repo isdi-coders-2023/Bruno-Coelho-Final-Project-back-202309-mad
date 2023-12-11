@@ -3,7 +3,7 @@ import { CaresController } from '../controllers/cares.controller.js';
 import createDebug from 'debug';
 import { CaresMongoRepo } from '../repos/cares/cares.mongo.repo.js';
 import { AuthInterceptor } from '../middleware/auth.interceptor.js';
-// A import { FileInterceptor } from '../middleware/file.interceptor.js';
+import { FileInterceptor } from '../middleware/file.interceptor.js';
 
 const debug = createDebug('BC:cares:router');
 
@@ -13,7 +13,7 @@ debug('Starting');
 const repo = new CaresMongoRepo();
 const controller = new CaresController(repo);
 const interceptor = new AuthInterceptor();
-// A const fileInterceptor = new FileInterceptor();
+const fileInterceptor = new FileInterceptor();
 
 // GET all cares
 caresRouter.get('/all', controller.getAll.bind(controller));
@@ -35,7 +35,7 @@ caresRouter.post(
   '/create',
   interceptor.authorization.bind(interceptor),
   interceptor.adminAuthentication.bind(interceptor),
-  // A fileInterceptor.singleFileStore('careFrontImg').bind(fileInterceptor),
+  fileInterceptor.singleFileStore('careFrontImg').bind(fileInterceptor),
   controller.create.bind(controller)
 );
 

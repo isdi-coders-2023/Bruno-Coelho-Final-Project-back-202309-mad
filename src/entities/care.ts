@@ -6,7 +6,7 @@ export type Care = {
   name: string;
   type: string; // Se puede cambiar por typos futuros en razon del servicio
   description: string;
-  careFrontImg: ImgData;
+  careFrontImg: ImgData; // CareFrontImg
   careBackImg: ImgData;
   price: number;
   adminUser: User;

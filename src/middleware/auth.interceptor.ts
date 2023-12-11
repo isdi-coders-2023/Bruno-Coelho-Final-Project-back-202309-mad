@@ -1,5 +1,4 @@
 import createDebug from 'debug'; // Corregir aquí
-
 import { Request, Response, NextFunction } from 'express';
 import { HttpError } from '../types/http.error.js';
 import { Auth } from '../services/auth.js';
