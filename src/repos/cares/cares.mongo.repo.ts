@@ -20,7 +20,7 @@ export class CaresMongoRepo implements Repository<Care> {
     return result;
   }
 
-  async getByPage(typeToSearch: string, page: string) {
+  async getByPage(typeToSearch: string, page: string): Promise<Care[]> {
     const result = await CareModel.find({ type: typeToSearch })
       .skip((Number(page) - 1) * 5)
       .limit(5)

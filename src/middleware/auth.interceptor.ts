@@ -1,10 +1,11 @@
-import createDeug from 'debug';
+import createDebug from 'debug'; // Corregir aquí
+
 import { Request, Response, NextFunction } from 'express';
 import { HttpError } from '../types/http.error.js';
 import { Auth } from '../services/auth.js';
 import { UsersMongoRepo } from '../repos/users/users.mongo.repo.js';
 
-const debug = createDeug('BC:auth:interceptor');
+const debug = createDebug('BC:auth:interceptor'); // Corregir aquí
 
 export class AuthInterceptor {
   constructor() {

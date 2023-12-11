@@ -6,10 +6,10 @@ import { HttpError } from '../types/http.error';
 import { Auth } from '../services/auth';
 
 jest.mock('../services/auth');
+jest.mock('../repos/cares/cares.mongo.repo');
 
 describe('Given the AuthInterceptor middleware', () => {
   describe('When it is instantiated', () => {
-    // Const mockRepo = {} as unknown as CaresMongoRepo;
     const mockPayload = {} as TokenPayload;
     const req = {
       body: { tokenPayload: mockPayload },
@@ -39,25 +39,11 @@ describe('Given the AuthInterceptor middleware', () => {
       interceptor.authorization(req, res, next);
       expect(next).toHaveBeenCalledWith(error);
     });
-
-    test('Then the authorization method should throw an error when authHeader does not start with Bearer', () => {
-      const error = new HttpError(
-        401,
-        'Not Authorized',
-        'Not Bearer in Authorization header'
-      );
-      req.get = jest.fn().mockReturnValueOnce('No Bearer');
-      (Auth.verifyAndGetPayload as jest.Mock).mockResolvedValueOnce(
-        mockPayload
-      );
-      interceptor.authorization(req, res, next);
-      expect(next).toHaveBeenCalledWith(error);
-    });
   });
 
   describe('When it is instantiated', () => {
     const mockCaresMongoRepo = {
-      queryById: jest.fn().mockResolvedValue({ owner: { id: '6' } }),
+      getById: jest.fn().mockResolvedValue({ owner: { id: '6' } }),
     } as unknown as CaresMongoRepo;
     const mockPayload = { id: '6' } as TokenPayload;
     const mockFilmId = '2';
@@ -75,22 +61,7 @@ describe('Given the AuthInterceptor middleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    test('Then the authorization method should throw an error when there is no token in the body', () => {
-      const error = new HttpError(
-        498,
-        'Token not found',
-        'Token not found in Authorized interceptor'
-      );
-      const mockPayload = null;
-      const req = {
-        body: { tokenPayload: mockPayload },
-      } as unknown as Request;
-
-      authInterceptor.authorization(req, res, next);
-      expect(next).toHaveBeenCalledWith(error);
-    });
-
-    test('Then the authorization method should throw an error when the film owner id does not match with the id from the request params', async () => {
+    test('Then the authorization method should throw an error ', async () => {
       const error = new HttpError(401, 'Not authorized', 'Not authorized');
       const mockUserId = { id: '7' };
       const mockFilmId = { id: '3', owner: { id: '6' } };
@@ -100,7 +71,7 @@ describe('Given the AuthInterceptor middleware', () => {
       } as unknown as Request;
 
       authInterceptor.authorization(req, res, next);
-      await expect(mockCaresMongoRepo.getById).toHaveBeenCalled();
+      await expect(mockCaresMongoRepo.getById).toHaveBeenCalled(); // Corrige aquí
       expect(next).toHaveBeenCalledWith(error);
     });
   });

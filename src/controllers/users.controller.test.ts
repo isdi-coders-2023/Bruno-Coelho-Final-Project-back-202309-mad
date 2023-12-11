@@ -5,7 +5,7 @@ import { User } from '../entities/user';
 
 jest.mock('../services/auth');
 
-describe('Given Cares Controller class', () => {
+describe('Given CaresController class', () => {
   let controller: UsersController;
   let mockRequest: Request;
   let mockResponse: Response;
@@ -59,20 +59,20 @@ describe('Given Cares Controller class', () => {
       const mockRequest = {
         body: {
           email: 'test@example.com',
-          password: 'test123',
+          passwd: 'test',
         },
       } as unknown as Request;
 
       const mockUser = {
         email: 'TestName',
-        password: 'test123',
+        passwd: 'test',
       } as unknown as User;
       mockRepo.login.mockResolvedValueOnce(mockUser);
       await controller.login(mockRequest, mockResponse, mockNext);
 
       expect(mockRepo.login).toHaveBeenCalledWith({
         email: 'test@example.com',
-        password: 'test123',
+        passwd: 'test',
       });
       expect(mockResponse.status).toHaveBeenCalledWith(202);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -94,8 +94,19 @@ describe('Given Cares Controller class', () => {
       } as unknown as UsersMongoRepo;
 
       const controller = new UsersController(mockRepo);
+      const mockImageData = { url: 'https://example.com/image.jpg' };
+      const mockCloudinaryService = {
+        uploadImage: jest.fn().mockResolvedValue(mockImageData),
+      };
+
+      controller.cloudinaryService = mockCloudinaryService;
 
       await controller.create(mockRequest, mockResponse, mockNext);
+
+      expect(mockCloudinaryService.uploadImage).toHaveBeenCalledWith(
+        mockRequest.file?.path
+      );
+      expect(mockRequest.body.avatar).toBe(mockImageData);
     });
   });
 

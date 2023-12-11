@@ -1,105 +1,27 @@
-import { NextFunction, Request, Response } from 'express';
-import { AuthInterceptor } from './auth.interceptor';
-import { CaresMongoRepo } from '../repos/cares/cares.mongo.repo';
-import { TokenPayload } from '../services/auth';
-import { HttpError } from '../types/http.error';
-import { Auth } from '../services/auth';
+import { Request, Response } from 'express';
+import { FileInterceptor } from './file.interceptor';
+import multer from 'multer';
 
-describe('Given the AuthInterceptor middleware', () => {
-  describe('When it is instantiated', () => {
-    const mockRepo = {} as unknown as CaresMongoRepo;
-    const mockPayload = {} as TokenPayload;
-    const req = {
-      body: { tokenPayload: mockPayload },
-    } as unknown as Request;
-    const res = {} as unknown as Response;
-    const next = jest.fn() as NextFunction;
-    const interceptor = new AuthInterceptor(mockRepo);
+jest.mock('multer');
 
-    test('Then the authorization method should be used', () => {
-      req.get = jest.fn().mockReturnValueOnce('Bearer test');
-      (Auth.verifyAndGetPayload as jest.Mock).mockResolvedValueOnce(
-        mockPayload
-      );
-      interceptor.authorization(req, res, next);
-      expect(next).toHaveBeenCalled();
-    });
-
-    test('Then the authorization method should throw an error when there is no authHeader', () => {
-      const error = new HttpError(
-        401,
-        'Not Authorized',
-        'Not Authorization header'
-      );
-      (Auth.verifyAndGetPayload as jest.Mock).mockResolvedValueOnce(
-        mockPayload
-      );
-      interceptor.authorization(req, res, next);
-      expect(next).toHaveBeenCalledWith(error);
-    });
-
-    test('Then the authorization method should throw an error when authHeader does not start with Bearer', () => {
-      const error = new HttpError(
-        401,
-        'Not Authorized',
-        'Not Bearer in Authorization header'
-      );
-      req.get = jest.fn().mockReturnValueOnce('No Bearer');
-      (Auth.verifyAndGetPayload as jest.Mock).mockResolvedValueOnce(
-        mockPayload
-      );
-      interceptor.authorization(req, res, next);
-      expect(next).toHaveBeenCalledWith(error);
-    });
+describe('Given FileInterceptor class', () => {
+  const middlewareMock = jest.fn();
+  const single = jest.fn().mockReturnValue(middlewareMock);
+  multer.diskStorage = jest
+    .fn()
+    .mockImplementation(({ filename }) => filename('', '', () => {}));
+  (multer as unknown as jest.Mock).mockReturnValue({
+    single,
   });
 
-  describe('When it is instantiated', () => {
-    const mockCaresMongoRepo = {
-      queryById: jest.fn().mockResolvedValue({ owner: { id: '6' } }),
-    } as unknown as CaresMongoRepo;
-    const mockPayload = { id: '6' } as TokenPayload;
-    const mockFilmId = '2';
-    const req = {
-      body: { tokenPayload: mockPayload },
-      params: { id: mockFilmId },
-    } as unknown as Request;
-    const res = {} as unknown as Response;
-    const next = jest.fn() as NextFunction;
-    const authInterceptor = new AuthInterceptor();
+  describe('When we instantiate it', () => {
+    const interceptor = new FileInterceptor();
 
-    test('Then the authorization method should be used', async () => {
-      authInterceptor.authorization(req, res, next);
-      await expect(mockCaresMongoRepo.getById).toHaveBeenCalled();
-      expect(next).toHaveBeenCalled();
-    });
-
-    test('Then the authorization method should throw an error when there is no token in the body', () => {
-      const error = new HttpError(
-        498,
-        'Token not found',
-        'Token not found in Authorized interceptor'
-      );
-      const mockPayload = null;
-      const req = {
-        body: { tokenPayload: mockPayload },
-      } as unknown as Request;
-
-      authInterceptor.authorization(req, res, next);
-      expect(next).toHaveBeenCalledWith(error);
-    });
-
-    test('Then the authorization method should throw an error when the film owner id does not match with the id from the request params', async () => {
-      const error = new HttpError(401, 'Not authorized', 'Not authorized');
-      const mockUserId = { id: '7' };
-      const mockFilmId = { id: '3', owner: { id: '6' } };
-      const req = {
-        body: { tokenPayload: mockUserId },
-        params: mockFilmId,
-      } as unknown as Request;
-
-      authInterceptor.authorization(req, res, next);
-      await expect(mockCaresMongoRepo.getById).toHaveBeenCalled();
-      expect(next).toHaveBeenCalledWith(error);
+    test('Then singleFileStore should be used', () => {
+      interceptor.singleFileStore()({} as Request, {} as Response, jest.fn());
+      expect(multer.diskStorage).toHaveBeenCalled();
+      expect(single).toHaveBeenCalled();
+      expect(middlewareMock).toHaveBeenCalled();
     });
   });
 });
