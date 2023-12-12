@@ -30,8 +30,10 @@ export class AuthInterceptor {
   async adminAuthentication(req: Request, res: Response, next: NextFunction) {
     try {
       const userID = req.body.adminUserID;
+      console.log(userID);
       const repoUsers = new UsersMongoRepo();
       const user = await repoUsers.getById(userID);
+      console.log(user);
       if (!user.admin)
         throw new HttpError(401, 'Unauthorized', 'User not valid');
       next();
