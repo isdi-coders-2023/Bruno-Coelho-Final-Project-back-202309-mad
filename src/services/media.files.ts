@@ -12,7 +12,7 @@ export class MediaFiles {
       cloud_name: 'dott6rqwf',
       api_key: '643441793527515',
       api_secret: process.env.CLOUDINARY_SECRET,
-      secure: true, // Setting return "https" URLs
+      secure: true,
     });
     debug('Instantiated');
     debug('key', cloudinary.config().api_key);

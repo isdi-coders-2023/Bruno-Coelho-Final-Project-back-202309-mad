@@ -18,7 +18,7 @@ export class CaresController extends Controller<Care> {
       if (!req.file)
         throw new HttpError(406, 'Not Acceptable', 'Invalid multer file');
       const imgData = await this.cloudinaryService.uploadImage(req.file.path);
-      req.body.careFrontImg = imgData;
+      req.body.careImg = imgData;
       super.create(req, res, next);
     } catch (error) {
       next(error);

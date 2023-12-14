@@ -15,9 +15,7 @@ export class FileInterceptor {
       limits: { fileSize },
     };
 
-    const middleware = multer(options).single(fileName); // Para varias imagens=> Aquicoloco  'fields'
-    // Save as req.file is the 'fileName' file
-    // req.body will hold the text fields, if there were any
+    const middleware = multer(options).single(fileName);
 
     return (req: Request, res: Response, next: NextFunction) => {
       const previousBody = req.body;

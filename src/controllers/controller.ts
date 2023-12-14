@@ -30,15 +30,6 @@ export abstract class Controller<T extends { id: unknown }> {
     }
   }
 
-  // Async getById(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     const result = await this.repo.getById(req.params.id);
-  //     res.json(result);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
-
   async search(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await this.repo.search(req.params.type);

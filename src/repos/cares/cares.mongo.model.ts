@@ -15,13 +15,7 @@ const caresSchema = new Schema<Care>({
     type: String,
     required: true,
   },
-  careFrontImg: {
-    publicId: String,
-    size: Number,
-    format: String,
-    url: String,
-  },
-  careBackImg: {
+  careImg: {
     publicId: String,
     size: Number,
     format: String,

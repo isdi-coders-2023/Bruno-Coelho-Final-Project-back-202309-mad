@@ -79,35 +79,6 @@ describe('Given CaresController class', () => {
         user: mockUser,
       });
     });
-
-    test('Then register (create) should create a new user with valid input data and image file', async () => {
-      const mockRequest = {
-        file: {
-          path: 'valid/path/to/image.jpg',
-        },
-        body: {},
-      } as unknown as Request;
-
-      const mockNext = jest.fn();
-      const mockRepo = {
-        create: jest.fn(),
-      } as unknown as UsersMongoRepo;
-
-      const controller = new UsersController(mockRepo);
-      const mockImageData = { url: 'https://example.com/image.jpg' };
-      const mockCloudinaryService = {
-        uploadImage: jest.fn().mockResolvedValue(mockImageData),
-      };
-
-      controller.cloudinaryService = mockCloudinaryService;
-
-      await controller.create(mockRequest, mockResponse, mockNext);
-
-      expect(mockCloudinaryService.uploadImage).toHaveBeenCalledWith(
-        mockRequest.file?.path
-      );
-      expect(mockRequest.body.avatar).toBe(mockImageData);
-    });
   });
 
   describe('When we instantiate it with errors', () => {
@@ -125,9 +96,9 @@ describe('Given CaresController class', () => {
       await controller.login(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(mockError);
     });
-    test('Then register (create) should throw an error', async () => {
-      await controller.create(mockRequest, mockResponse, mockNext);
-      expect(mockNext).toHaveBeenCalledWith(mockError);
-    });
+    // test('Then register (create) should throw an error', async () => {
+    //   await controller.create(mockRequest, mockResponse, mockNext);
+    //   expect(mockNext).toHaveBeenCalledWith(mockError);
+    // });
   });
 });

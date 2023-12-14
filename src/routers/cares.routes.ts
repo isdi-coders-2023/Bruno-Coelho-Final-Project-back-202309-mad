@@ -15,31 +15,23 @@ const controller = new CaresController(repo);
 const interceptor = new AuthInterceptor();
 const fileInterceptor = new FileInterceptor();
 
-// GET all cares
 caresRouter.get('/all', controller.getAll.bind(controller));
 
-// GET care by type
 caresRouter.get('/search/type/:type', controller.search.bind(controller));
 
-// GET cares by page
 caresRouter.get(
   '/search/type/:type/:page',
   controller.getByPage.bind(controller)
 );
 
-// GET care by ID
-// caresRouter.get('/search/id/:id', controller.getById.bind(controller));
-
-// POST create care
 caresRouter.post(
   '/create',
   interceptor.authorization.bind(interceptor),
   interceptor.adminAuthentication.bind(interceptor),
-  fileInterceptor.singleFileStore('careFrontImg').bind(fileInterceptor),
+  fileInterceptor.singleFileStore('careImg').bind(fileInterceptor),
   controller.create.bind(controller)
 );
 
-// PATCH update care
 caresRouter.patch(
   '/update/:id',
   interceptor.authorization.bind(interceptor),
@@ -47,7 +39,6 @@ caresRouter.patch(
   controller.update.bind(controller)
 );
 
-// DELETE delete care
 caresRouter.delete(
   '/delete/:id',
   interceptor.authorization.bind(interceptor),

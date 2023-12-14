@@ -94,13 +94,3 @@ describe('GivenUsersMongoRepo', () => {
     });
   });
 });
-
-// Test('Given update method is unimplemented', async () => {
-//   const updateMethod = () => repo.update('', {});
-//   expect(updateMethod).toThrow('Method not implemented.');
-// });
-
-// test('Given search method is unimplemented', async () => {
-//   const searchMethod = () => repo.search({ key: 'id', value: '' });
-//   expect(searchMethod).toThrow('Method not implemented.');
-// });
