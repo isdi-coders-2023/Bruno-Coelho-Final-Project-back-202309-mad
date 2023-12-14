@@ -68,14 +68,17 @@ describe('GivenUsersMongoRepo', () => {
       const deleteMethod = () => repo.delete('');
       expect(deleteMethod).toThrow('Method not implemented.');
     });
+
+    test('Given getbyPage method is unimplemented', async () => {
+      const getByPageMethod = () => repo.getByPage('');
+      expect(getByPageMethod).toThrow('Method not implemented.');
+    });
   });
   describe('When we isntantiate it WITH errors', () => {
     const exec = jest.fn().mockResolvedValue(undefined);
     beforeEach(() => {
       UserModel.findById = jest.fn().mockReturnValue({
-        populate: jest.fn().mockReturnValue({
-          exec,
-        }),
+        exec,
       });
       UserModel.findOne = jest.fn().mockReturnValue({
         exec,
@@ -91,13 +94,3 @@ describe('GivenUsersMongoRepo', () => {
     });
   });
 });
-
-// Test('Given update method is unimplemented', async () => {
-//   const updateMethod = () => repo.update('', {});
-//   expect(updateMethod).toThrow('Method not implemented.');
-// });
-
-// test('Given search method is unimplemented', async () => {
-//   const searchMethod = () => repo.search({ key: 'id', value: '' });
-//   expect(searchMethod).toThrow('Method not implemented.');
-// });

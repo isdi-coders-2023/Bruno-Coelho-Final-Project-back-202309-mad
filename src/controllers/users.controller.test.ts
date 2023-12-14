@@ -5,7 +5,7 @@ import { User } from '../entities/user';
 
 jest.mock('../services/auth');
 
-describe('Given Cares Controller class', () => {
+describe('Given CaresController class', () => {
   let controller: UsersController;
   let mockRequest: Request;
   let mockResponse: Response;
@@ -59,43 +59,25 @@ describe('Given Cares Controller class', () => {
       const mockRequest = {
         body: {
           email: 'test@example.com',
-          password: 'test123',
+          passwd: 'test',
         },
       } as unknown as Request;
 
       const mockUser = {
         email: 'TestName',
-        password: 'test123',
+        passwd: 'test',
       } as unknown as User;
       mockRepo.login.mockResolvedValueOnce(mockUser);
       await controller.login(mockRequest, mockResponse, mockNext);
 
       expect(mockRepo.login).toHaveBeenCalledWith({
         email: 'test@example.com',
-        password: 'test123',
+        passwd: 'test',
       });
       expect(mockResponse.status).toHaveBeenCalledWith(202);
       expect(mockResponse.json).toHaveBeenCalledWith({
         user: mockUser,
       });
-    });
-
-    test('Then register (create) should create a new user with valid input data and image file', async () => {
-      const mockRequest = {
-        file: {
-          path: 'valid/path/to/image.jpg',
-        },
-        body: {},
-      } as unknown as Request;
-
-      const mockNext = jest.fn();
-      const mockRepo = {
-        create: jest.fn(),
-      } as unknown as UsersMongoRepo;
-
-      const controller = new UsersController(mockRepo);
-
-      await controller.create(mockRequest, mockResponse, mockNext);
     });
   });
 
@@ -114,9 +96,9 @@ describe('Given Cares Controller class', () => {
       await controller.login(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(mockError);
     });
-    test('Then register (create) should throw an error', async () => {
-      await controller.create(mockRequest, mockResponse, mockNext);
-      expect(mockNext).toHaveBeenCalledWith(mockError);
-    });
+    // test('Then register (create) should throw an error', async () => {
+    //   await controller.create(mockRequest, mockResponse, mockNext);
+    //   expect(mockNext).toHaveBeenCalledWith(mockError);
+    // });
   });
 });

@@ -4,7 +4,7 @@ import 'dotenv/config';
 import createDebug from 'debug';
 import { User } from '../entities/user.js';
 import { HttpError } from '../types/http.error.js';
-const debug = createDebug('W7E:auth');
+const debug = createDebug('BC:auth');
 
 debug('Imported');
 

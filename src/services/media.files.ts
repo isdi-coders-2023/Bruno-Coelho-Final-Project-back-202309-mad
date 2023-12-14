@@ -1,25 +1,21 @@
 /* eslint-disable camelcase */
 import { v2 as cloudinary } from 'cloudinary';
 import createDebug from 'debug';
-import { ImgData } from '../types/img.data';
+import { ImgData } from '../types/img.data.js';
 import { HttpError } from '../types/http.error.js';
 
-const debug = createDebug('W8E:mediaFiles');
+const debug = createDebug('BC:mediaFiles');
 
 export class MediaFiles {
   constructor() {
-    // Alternative cloudinary.config({
-    //   cloud_name: 'dip7gfqzk',
-    //   api_key: '779336367936511',
-    //   api_secret: process.env.CLOUDINARY_SECRET,
-    // });
-
     cloudinary.config({
-      secure: true, // Setting return "https" URLs
+      cloud_name: 'dott6rqwf',
+      api_key: '643441793527515',
+      api_secret: process.env.CLOUDINARY_SECRET,
+      secure: true,
     });
-
     debug('Instantiated');
-    debug('key:', cloudinary.config().api_key);
+    debug('key', cloudinary.config().api_key);
   }
 
   async uploadImage(imagePath: string) {

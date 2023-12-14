@@ -1,11 +1,14 @@
 import { Auth } from './auth.js';
+import { TokenPayload } from '../types/token.payload.js';
+
 import { compare, hash } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-jest.mock('bcrypt'); // Todas las funciones mockeadas devuelven undefined
+jest.mock('bcrypt');
+jest.mock('jsonwebtoken');
 
 describe('Given Auth abstract class', () => {
-  describe('When se use its methods', () => {
+  describe('When we use its methods', () => {
     test('Then hash should ...', () => {
       // Arrange
       (hash as jest.Mock).mockReturnValue('test');
@@ -19,11 +22,18 @@ describe('Given Auth abstract class', () => {
 
     test('Then compare should ...', () => {
       (compare as jest.Mock).mockReturnValue(true);
-      const mockValue = '';
-      const result = Auth.compare(mockValue, mockValue);
+      const result = Auth.compare('', '');
       expect(compare).toHaveBeenCalled();
       expect(result).toBe(true);
     });
+
+    test('Then signJWT should ...', () => {
+      jwt.sign = jest.fn().mockReturnValue('test');
+      const result = Auth.signJWT({} as unknown as TokenPayload);
+      expect(jwt.sign).toHaveBeenCalled();
+      expect(result).toBe('test');
+    });
+
     test('Then verifyAndGetPayload should ...', () => {
       jwt.verify = jest.fn().mockReturnValue({});
       const result = Auth.verifyAndGetPayload('');

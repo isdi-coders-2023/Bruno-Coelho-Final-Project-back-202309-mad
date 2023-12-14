@@ -4,7 +4,6 @@ import { MediaFiles } from '../services/media.files.js';
 
 export abstract class Controller<T extends { id: unknown }> {
   cloudinaryService: MediaFiles;
-
   // eslint-disable-next-line no-unused-vars
   constructor(protected repo: Repository<T>) {
     this.cloudinaryService = new MediaFiles();
@@ -19,9 +18,12 @@ export abstract class Controller<T extends { id: unknown }> {
     }
   }
 
-  async getById(req: Request, res: Response, next: NextFunction) {
+  async getByPage(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.repo.getById(req.params.id);
+      const result = await this.repo.getByPage(
+        req.params.type,
+        req.params.page
+      );
       res.json(result);
     } catch (error) {
       next(error);

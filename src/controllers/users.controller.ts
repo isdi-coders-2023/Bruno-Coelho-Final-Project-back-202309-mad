@@ -6,7 +6,7 @@ import { Controller } from './controller.js';
 import { User } from '../entities/user.js';
 import { LoginResponse } from '../types/login.response.js';
 
-const debug = createDebug('Users:controller');
+const debug = createDebug('BC:users:controller');
 
 export class UsersController extends Controller<User> {
   constructor(protected repo: UsersMongoRepo) {
@@ -16,8 +16,8 @@ export class UsersController extends Controller<User> {
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = req.body.userId // Explicación: userId equivaldría a tokenUserId (para poder entender mejor de dónde viene)
-        ? await this.repo.getById(req.body.userId) // Explicación: userId equivaldría a tokenUserId (para poder entender mejor de dónde viene)
+      const result = req.body.userId
+        ? await this.repo.getById(req.body.userId)
         : await this.repo.login(req.body);
 
       const data: LoginResponse = {
