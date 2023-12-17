@@ -15,7 +15,7 @@ const controller = new CaresController(repo);
 const interceptor = new AuthInterceptor();
 const fileInterceptor = new FileInterceptor();
 
-caresRouter.get('/all', controller.getAll.bind(controller));
+caresRouter.get('/', controller.getAll.bind(controller));
 
 caresRouter.get('/search/type/:type', controller.search.bind(controller));
 
@@ -25,7 +25,7 @@ caresRouter.get(
 );
 
 caresRouter.post(
-  '/create',
+  '/', // Antes estaba con '/create' por las indicaciones de Sergi y elias le puso solo '/'
   interceptor.authorization.bind(interceptor),
   interceptor.adminAuthentication.bind(interceptor),
   fileInterceptor.singleFileStore('careImg').bind(fileInterceptor),

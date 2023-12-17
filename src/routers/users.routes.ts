@@ -4,6 +4,11 @@ import createDebug from 'debug';
 import { UsersMongoRepo } from '../repos/users/users.mongo.repo.js';
 import { AuthInterceptor } from '../middleware/auth.interceptor.js';
 
+import multer from 'multer';
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
 const debug = createDebug('BC:users:router');
 
 export const usersRouter = createRouter();
@@ -15,7 +20,11 @@ const interceptor = new AuthInterceptor();
 
 usersRouter.get('/', controller.getAll.bind(controller));
 
-usersRouter.post('/register', controller.create.bind(controller));
+usersRouter.post(
+  '/register',
+  upload.none(),
+  controller.create.bind(controller)
+);
 
 usersRouter.post('/login', controller.login.bind(controller));
 

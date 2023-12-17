@@ -13,5 +13,7 @@ export default {
     'src/app.ts',
     'src/index.ts',
     'src/routers/users.router.ts',
+    'src/routers/cares.routes.ts',
+    'src/routers/users.routes.ts',
   ],
 };

@@ -40,12 +40,14 @@ export abstract class Controller<T extends { id: unknown }> {
   }
 
   async create(req: Request, res: Response, next: NextFunction) {
+    // console.log('controller', req.body);
     try {
       const result = await this.repo.create(req.body);
       res.status(201);
       res.statusMessage = 'Created';
       res.json(result);
     } catch (error) {
+      // console.log(error);
       next(error);
     }
   }
