@@ -16,8 +16,8 @@ export class UsersController extends Controller<User> {
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = req.body.userId
-        ? await this.repo.getById(req.body.userId)
+      const result = req.body.adminUserID
+        ? await this.repo.getById(req.body.adminUserID)
         : await this.repo.login(req.body);
 
       const data: LoginResponse = {
