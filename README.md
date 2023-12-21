@@ -66,9 +66,10 @@ Antes de ejecutar el backend de la aplicación, asegúrese de tener instaladas l
 1. **Node.js:** Descargar e instalar Node.js.
 2. **MongoDB:** Descargar e instalar MongoDB.
 
-### Configuración del Backend:
+### Configuración del Backend
 
 1. **Clone el repositorio:**
-   ```bash
-   git clone https://github.com/isdi-coders-2023/Bruno-Coelho-Final-Project-back-202309-mad
-   ```
+
+```bash
+git clone https://github.com/isdi-coders-2023/Bruno-Coelho-Final-Project-back-202309-mad
+```
